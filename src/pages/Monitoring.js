@@ -1,0 +1,167 @@
+import React, { useState, useEffect } from "react";
+
+// Styles
+const thStyle = { padding: "10px", fontWeight: "bold" };
+const tdStyle = { padding: "10px" };
+
+function Monitoring() {
+  const [search, setSearch] = useState("");
+  const [severityFilter, setSeverityFilter] = useState("All");
+  const [alerts, setAlerts] = useState([]);
+
+  // 🔥 Fetch real alerts from Wazuh
+  useEffect(() => {
+    async function fetchAlerts() {
+      try {
+        const res = await fetch("/wazuh-alerts-4.x-*/_search", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Basic " + btoa("admin:jxv9v6Jq.1M6BZgQiNQ6T0m3vym+D0x+")
+          },
+          body: JSON.stringify({
+            size: 20,
+            _source: [
+              "@timestamp",
+              "agent.name",
+              "agent.ip",
+              "rule.description",
+              "data.win.system.message"
+            ],
+            sort: [{ "@timestamp": { order: "desc" } }],
+            query: { match_all: {} }
+          })
+        });
+
+        const data = await res.json();
+
+        const clean = data.hits.hits.map((hit, i) => {
+          const msg = hit._source.data?.win?.system?.message?.toLowerCase() || "";
+          let severity = "Low";
+          if (msg.includes("failed") || msg.includes("error") || msg.includes("unauthorized")) {
+            severity = "High";
+          } else if (msg.includes("warning") || msg.includes("policy") || msg.includes("alert")) {
+            severity = "Medium";
+          } 
+
+          return {
+            id: i + 1,
+            ip: hit._source.agent?.ip || "N/A",
+            type: hit._source.rule?.description || "N/A",
+            severity,
+            time: hit._source["@timestamp"]
+          };
+        });
+
+        setAlerts(clean);
+      } catch (err) {
+        console.error("Fetch error:", err);
+      }
+    }
+
+    // First fetch
+    fetchAlerts();
+
+    // Auto-refresh every 30 seconds
+    const interval = setInterval(fetchAlerts, 30000);
+
+    // Cleanup when component unmounts
+    return () => clearInterval(interval);
+  }, []);
+
+  // 🔍 Filter logic
+  const data = alerts.filter((item) => {
+    const matchSearch = Object.values(item)
+      .join(" ")
+      .toLowerCase()
+      .includes(search.toLowerCase());
+
+    const matchSeverity =
+      severityFilter === "All" || item.severity === severityFilter;
+
+    return matchSearch && matchSeverity;
+  });
+
+  return (
+    <div>
+      <h1>Monitoring</h1>
+
+      {/* 🔍 Search + Filter */}
+      <div style={{ display: "flex", gap: "10px", marginBottom: "15px" }}>
+        <input
+          type="text"
+          placeholder="Search..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          style={{
+            flex: 1,
+            padding: "10px",
+            borderRadius: "6px",
+            border: "1px solid #ccc",
+          }}
+        />
+
+        <select
+          value={severityFilter}
+          onChange={(e) => setSeverityFilter(e.target.value)}
+          style={{
+            padding: "10px",
+            borderRadius: "6px",
+            border: "1px solid #ccc",
+          }}
+        >
+          <option value="All">All</option>
+          <option value="High">High</option>
+          <option value="Medium">Medium</option>
+          <option value="Low">Low</option>
+        </select>
+      </div>
+
+      {/* 📊 Table */}
+      <div className="card">
+        <table style={{ width: "100%", borderCollapse: "collapse" }}>
+          <thead>
+            <tr style={{ backgroundColor: "#f0f2f5", textAlign: "left" }}>
+              <th style={thStyle}>ID</th>
+              <th style={thStyle}>IP</th>
+              <th style={thStyle}>Type</th>
+              <th style={thStyle}>Severity</th>
+              <th style={thStyle}>Time</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {data.map((item) => (
+              <tr key={item.id} style={{ borderBottom: "1px solid #eee" }}>
+                <td style={tdStyle}>{item.id}</td>
+                <td style={tdStyle}>{item.ip}</td>
+                <td style={tdStyle}>{item.type}</td>
+                <td style={tdStyle}>
+                  <span
+                    style={{
+                      padding: "5px 10px",
+                      borderRadius: "20px",
+                      color: "white",
+                      fontWeight: "bold",
+                      backgroundColor:
+                        item.severity === "High"
+                          ? "#e74c3c"
+                          : item.severity === "Medium"
+                          ? "#f39c12"
+                          : "#2ecc71",
+                    }}
+                  >
+                    {item.severity}
+                  </span>
+                </td>
+                <td style={tdStyle}>{item.time}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+export default Monitoring;
