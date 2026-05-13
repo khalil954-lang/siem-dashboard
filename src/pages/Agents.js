@@ -1,5 +1,10 @@
 import { useEffect, useState } from "react";
 
+const isActiveAgent = (status = "") => {
+  const normalizedStatus = status.toLowerCase();
+  return normalizedStatus === "active" || normalizedStatus === "connected";
+};
+
 function Agents() {
   const [agents, setAgents] = useState([]);
 
@@ -43,107 +48,62 @@ function Agents() {
 
     return () => clearInterval(interval);
   }, []);
-/* 
+
   return (
     <div>
-      <h2>Agents</h2>
-      <ul>
-        {agents.map(a => (
-          <li key={a.id}>
-            {a.id} | {a.name} | {a.ip} | {a.status}
-          </li>
-        ))}
-      </ul>
-      
-    </div>
-  );
-*/
-  return (
-    <div classname="agents status">
-      <table style={{ width: "100%", borderCollapse: "collapse" }}>
-        <thead>
-          <tr style={{ backgroundColor: "#f0f2f5", textAlign: "left" }}>
-            <th>ID</th>
-            <th>Name</th>
-            <th>IP Address</th>
-            <th>Status</th>
-          </tr>
-        </thead>
+      <div className="section-header">
+        <div>
+          <h2>Agents</h2>
+          <p className="subtitle">Connected endpoints and runtime status</p>
+        </div>
+      </div>
 
-        <tbody>
-          {agents.map((item) => (
-            <tr key={item.id} style={{ borderBottom: "1px solid #eee" }}>
-              <td>{item.id}</td>
-              <td>{item.name}</td>
-              <td>{item.ip}</td>
-              <td>{item.status}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-}
+      <div className="agents-grid">
+        {agents.map((item) => {
+          const active = isActiveAgent(item.status);
 
-export default Agents;
+          return (
+            <div key={item.id} className="agent-card">
+              <div className="agent-header">
+                <h3>{item.name || "Unknown Agent"}</h3>
+                <span
+                  className={
+                    active
+                      ? "status-indicator active"
+                      : "status-indicator inactive"
+                  }
+                >
+                  <span className="dot" />
+                  {item.status || "unknown"}
+                </span>
+              </div>
 
-
-/*import React from "react";
-
-// 🔥 Mock agents
-const agents = [
-  { id: 1, name: "Camera-01", ip: "192.168.1.100", status: "Online" },
-  { id: 2, name: "Server-01", ip: "192.168.1.101", status: "Offline" },
-  { id: 3, name: "Laptop-01", ip: "192.168.1.102", status: "Online" },
-];
-
-const getStatusColor = (status) => {
-  return status === "Connected" ? "#2ecc71" : "#e74c3c";
-};
-
-function Agents() {
-  return (
-    <div>
-      <h1>Agents</h1>
-
-      <div className="card">
-        <table style={{ width: "100%", borderCollapse: "collapse" }}>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Name</th>
-              <th>IP</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {agents.map((agent) => (
-              <tr key={agent.id}>
-                <td>{agent.id}</td>
-                <td>{agent.name}</td>
-                <td>{agent.ip}</td>
-                <td>
-                  <span
-                    style={{
-                      padding: "5px 10px",
-                      borderRadius: "20px",
-                      backgroundColor: getStatusColor(agent.status),
-                      color: "white",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    {agent.status}
-                  </span>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+              <div className="agent-details">
+                <div className="detail-row">
+                  <span className="label">Agent ID</span>
+                  <span className="value">{item.id}</span>
+                </div>
+                <div className="detail-row">
+                  <span className="label">IP Address</span>
+                  <span className="value">{item.ip || "N/A"}</span>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+        {agents.length === 0 ? (
+          <div className="agent-card">
+            <div className="agent-details">
+              <div className="detail-row">
+                <span className="label">Status</span>
+                <span className="value">No agents found</span>
+              </div>
+            </div>
+          </div>
+        ) : null}
       </div>
     </div>
   );
 }
 
 export default Agents;
-*/

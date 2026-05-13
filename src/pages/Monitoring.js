@@ -1,9 +1,5 @@
 import React, { useState, useEffect } from "react";
 
-// Styles
-const thStyle = { padding: "10px", fontWeight: "bold" };
-const tdStyle = { padding: "10px" };
-
 function Monitoring() {
   const [search, setSearch] = useState("");
   const [severityFilter, setSeverityFilter] = useState("All");
@@ -84,31 +80,27 @@ function Monitoring() {
 
   return (
     <div>
-      <h1>Monitoring</h1>
+      <div className="section-header">
+        <div>
+          <h2>Monitoring</h2>
+          <p className="subtitle">Review incoming alerts and filter by severity</p>
+        </div>
+      </div>
 
-      {/* 🔍 Search + Filter */}
       <div style={{ display: "flex", gap: "10px", marginBottom: "15px" }}>
         <input
           type="text"
           placeholder="Search..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          style={{
-            flex: 1,
-            padding: "10px",
-            borderRadius: "6px",
-            border: "1px solid #ccc",
-          }}
+          className="monitoring-filters"
+          style={{ flex: 1 }}
         />
 
         <select
           value={severityFilter}
           onChange={(e) => setSeverityFilter(e.target.value)}
-          style={{
-            padding: "10px",
-            borderRadius: "6px",
-            border: "1px solid #ccc",
-          }}
+          className="filter-select"
         >
           <option value="All">All</option>
           <option value="High">High</option>
@@ -117,46 +109,45 @@ function Monitoring() {
         </select>
       </div>
 
-      {/* 📊 Table */}
-      <div className="card">
-        <table style={{ width: "100%", borderCollapse: "collapse" }}>
+      <div className="table-container">
+        <table className="data-table">
           <thead>
-            <tr style={{ backgroundColor: "#f0f2f5", textAlign: "left" }}>
-              <th style={thStyle}>ID</th>
-              <th style={thStyle}>IP</th>
-              <th style={thStyle}>Type</th>
-              <th style={thStyle}>Severity</th>
-              <th style={thStyle}>Time</th>
+            <tr>
+              <th>ID</th>
+              <th>IP</th>
+              <th>Type</th>
+              <th>Severity</th>
+              <th>Time</th>
             </tr>
           </thead>
 
           <tbody>
             {data.map((item) => (
-              <tr key={item.id} style={{ borderBottom: "1px solid #eee" }}>
-                <td style={tdStyle}>{item.id}</td>
-                <td style={tdStyle}>{item.ip}</td>
-                <td style={tdStyle}>{item.type}</td>
-                <td style={tdStyle}>
+              <tr key={item.id}>
+                <td>{item.id}</td>
+                <td>{item.ip}</td>
+                <td>{item.type}</td>
+                <td>
                   <span
-                    style={{
-                      padding: "5px 10px",
-                      borderRadius: "20px",
-                      color: "white",
-                      fontWeight: "bold",
-                      backgroundColor:
-                        item.severity === "High"
-                          ? "#e74c3c"
-                          : item.severity === "Medium"
-                          ? "#f39c12"
-                          : "#2ecc71",
-                    }}
+                    className={
+                      item.severity === "High"
+                        ? "badge danger"
+                        : item.severity === "Medium"
+                        ? "badge warning"
+                        : "badge normal"
+                    }
                   >
                     {item.severity}
                   </span>
                 </td>
-                <td style={tdStyle}>{item.time}</td>
+                <td>{item.time}</td>
               </tr>
             ))}
+            {data.length === 0 ? (
+              <tr>
+                <td colSpan="5">No alerts found</td>
+              </tr>
+            ) : null}
           </tbody>
         </table>
       </div>

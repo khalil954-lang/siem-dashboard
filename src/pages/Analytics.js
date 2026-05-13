@@ -71,14 +71,48 @@ function Analytics() {
     return () => clearInterval(interval);
   }, []);
 
+  const totalAlerts = chartData
+    ? chartData.datasets[0].data.reduce((sum, value) => sum + value, 0)
+    : 0;
+  const peakIndex = chartData
+    ? chartData.datasets[0].data.indexOf(Math.max(...chartData.datasets[0].data))
+    : -1;
+  const peakTime = peakIndex >= 0 && chartData ? chartData.labels[peakIndex] : "N/A";
+
   return (
-    <div style={{ padding: "20px" }}>
-      <h1>Analytics</h1>
-      {chartData ? (
-        <Line data={chartData} />
-      ) : (
-        <p>Loading chart...</p>
-      )}
+    <div>
+      <div className="section-header">
+        <div>
+          <h2>Analytics</h2>
+          <p className="subtitle">Alert volume trends across monitored endpoints</p>
+        </div>
+      </div>
+
+      <div className="analytics-grid">
+        <div className="chart-card">
+          <h3>Alerts over time</h3>
+          {chartData ? <Line data={chartData} /> : <p>Loading chart...</p>}
+        </div>
+
+        <div className="metrics-sidebar">
+          <div className="metric-card">
+            <h3>Total Alerts</h3>
+            <div className="metric-value">
+              <span className="number">{totalAlerts}</span>
+            </div>
+            <p className="metric-desc">Total records in the current chart window</p>
+          </div>
+          <div className="metric-card">
+            <h3>Peak Time</h3>
+            <div className="metric-value">
+              <span className="number" style={{ fontSize: "1.5rem" }}>
+                {peakTime}
+              </span>
+            </div>
+            <p className="metric-desc">Highest alert count interval</p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
