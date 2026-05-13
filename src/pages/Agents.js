@@ -1,5 +1,10 @@
 import { useEffect, useState } from "react";
 
+const isActiveAgent = (status = "") => {
+  const normalizedStatus = status.toLowerCase();
+  return normalizedStatus === "active" || normalizedStatus === "connected";
+};
+
 function Agents() {
   const [agents, setAgents] = useState([]);
 
@@ -43,11 +48,6 @@ function Agents() {
 
     return () => clearInterval(interval);
   }, []);
-
-  const isActiveAgent = (status = "") => {
-    const normalizedStatus = status.toLowerCase();
-    return normalizedStatus === "active" || normalizedStatus === "connected";
-  };
 
   return (
     <div>

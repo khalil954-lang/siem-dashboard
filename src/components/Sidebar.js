@@ -26,6 +26,7 @@ function Sidebar({ active, setActive }) {
             tabIndex={0}
             onKeyDown={(event) => {
               if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
                 setActive(item.name);
               }
             }}
