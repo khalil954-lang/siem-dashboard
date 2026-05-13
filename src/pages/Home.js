@@ -34,47 +34,30 @@ const stats = [
 function Home() {
   return (
     <div>
-
-      {/* 🔥 HEADER */}
-      <div style={{ marginBottom: "20px" }}>
-        <h1>SIEM Dashboard</h1>
-        <p style={{ color: "gray" }}>Real-time security monitoring</p>
+      <div className="section-header">
+        <div>
+          <h2>SIEM Dashboard</h2>
+          <p className="subtitle">Real-time security monitoring</p>
+        </div>
       </div>
 
-      {/* 🔥 CARDS */}
-      <div style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(4, 1fr)",
-        gap: "20px",
-        marginBottom: "30px"
-      }}>
+      <div className="agents-grid">
         {stats.map((item, index) => (
-          <div
-            key={index}
-            style={{
-              background: "white",
-              padding: "20px",
-              borderRadius: "10px",
-              boxShadow: "0 2px 6px rgba(0,0,0,0.05)"
-            }}
-          >
-            <h4 style={{ color: "gray" }}>{item.label}</h4>
-            <h2 style={{ color: item.color }}>{item.value}</h2>
+          <div key={index} className="agent-card">
+            <div className="detail-row">
+              <span className="label">{item.label}</span>
+              <span className="value" style={{ color: item.color }}>
+                {item.value}
+              </span>
+            </div>
           </div>
         ))}
       </div>
 
-      {/* 🔥 GRAPH */}
-      <div style={{
-        background: "white",
-        padding: "20px",
-        borderRadius: "10px",
-        boxShadow: "0 2px 6px rgba(0,0,0,0.05)"
-      }}>
-        <h3 style={{ marginBottom: "15px" }}>Top Attacking IPs</h3>
+      <div className="chart-card" style={{ marginTop: "24px" }}>
+        <h3>Top Attacking IPs</h3>
         <Bar data={chartData} />
       </div>
-
     </div>
   );
 }

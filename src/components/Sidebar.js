@@ -1,5 +1,4 @@
 import React from "react";
-import "./Sidebar.css";
 
 function Sidebar({ active, setActive }) {
   const menuItems = [
@@ -10,22 +9,33 @@ function Sidebar({ active, setActive }) {
   ];
 
   return (
-    <div className="sidebar">
-      <h2 className="logo">SIEM</h2>
+    <aside className="sidebar">
+      <div className="sidebar-header">
+        <div className="brand-logo" />
+        <h2>SIEM</h2>
+      </div>
 
-      <ul className="menu">
+      <nav className="sidebar-nav">
+        <span className="nav-label">NAVIGATION</span>
         {menuItems.map((item) => (
-          <li
+          <div
             key={item.name}
-            className={active === item.name ? "menu-item active" : "menu-item"}
+            className={active === item.name ? "nav-item active" : "nav-item"}
             onClick={() => setActive(item.name)}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(event) => {
+              if (event.key === "Enter" || event.key === " ") {
+                setActive(item.name);
+              }
+            }}
           >
-            <span className="icon">{item.icon}</span>
+            <span>{item.icon}</span>
             <span>{item.name}</span>
-          </li>
+          </div>
         ))}
-      </ul>
-    </div>
+      </nav>
+    </aside>
   );
 }
 
