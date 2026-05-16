@@ -14,7 +14,7 @@ function Agents() {
         // Step 1: get token
         const authRes = await fetch("/security/user/authenticate", {
           headers: {
-            Authorization: "Basic " + btoa("admin:jxv9v6Jq.1M6BZgQiNQ6T0m3vym+D0x+") // test creds
+            Authorization: "Basic " + btoa("wazuh:.WZ+J?P21?4azlGVKejeZs0VxMymr78E") // test creds
           }
         });
         const authData = await authRes.json();

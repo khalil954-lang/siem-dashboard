@@ -4,6 +4,7 @@ import Home from "./pages/Home";
 import Monitoring from "./pages/Monitoring";
 import Analytics from "./pages/Analytics";
 import Agents from "./pages/Agents";
+import './App.css';
 
 function App() {
   const [activePage, setActivePage] = useState("Home");

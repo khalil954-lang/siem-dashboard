@@ -23,32 +23,64 @@ function Analytics() {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": "Basic " + btoa("admin:jxv9v6Jq.1M6BZgQiNQ6T0m3vym+D0x+")
+            "Authorization": "Basic " + btoa("admin:Newpassword123?")
           },
-          body: JSON.stringify({
-            size: 100,
-            _source: ["@timestamp", "rule.description"],
-            sort: [{ "@timestamp": { order: "asc" } }],
-            query: { match_all: {} }
+                    body: JSON.stringify({
+            // On ne veut pas récupérer tout le texte des logs (ça ralentirait), on veut juste compter
+            size: 0, 
+            query: {
+              bool: {
+                filter: [
+                  // Le filtre temporel (les dernières 24 heures)
+                  {
+                    range: {
+                      timestamp: { // Ou "@timestamp", selon ta version de Wazuh
+                        gte: "now-24h", // Depuis il y a 24 heures
+                        lte: "now"      // Jusqu'à maintenant
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            // L'agrégation (le secret pour le graphique) : grouper par heure (ou par 10 minutes)
+            aggs: {
+              alertes_par_heure: {
+                date_histogram: {
+                  field: "timestamp", // Ou "@timestamp"
+                  fixed_interval: "1h", // Grouper les alertes heure par heure (tu peux mettre "10m")
+                  time_zone: "Europe/Paris" // Change selon ton fuseau horaire
+                }
+              }
+            }
           })
         });
 
         const data = await res.json();
 
-        // Group alerts by hour
-        const counts = {};
-        data.hits.hits.forEach(hit => {
-          const time = new Date(hit._source["@timestamp"]);
+        // On récupère les calculs (les "buckets") de notre agrégation
+        const buckets = data.aggregations?.alertes_par_heure?.buckets || [];
+        
+        const labels = [];
+        const dataPoints = [];
+
+        // On boucle sur les résultats envoyés par Wazuh
+        buckets.forEach(bucket => {
+          // bucket.key_as_string contient l'heure exacte
+          const time = new Date(bucket.key_as_string);
           const hour = time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-          counts[hour] = (counts[hour] || 0) + 1;
+          
+          labels.push(hour);
+          // bucket.doc_count contient le nombre d'alertes pour cette heure-là
+          dataPoints.push(bucket.doc_count); 
         });
 
         setChartData({
-          labels: Object.keys(counts),
+          labels: labels,
           datasets: [
             {
               label: "Alerts over time",
-              data: Object.values(counts),
+              data: dataPoints,
               borderColor: "#3498db",
               backgroundColor: "rgba(52, 152, 219, 0.2)",
               fill: true,

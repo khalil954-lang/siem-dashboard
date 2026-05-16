@@ -13,7 +13,7 @@ function Monitoring() {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": "Basic " + btoa("admin:jxv9v6Jq.1M6BZgQiNQ6T0m3vym+D0x+")
+            "Authorization": "Basic " + btoa("admin:Newpassword123?")
           },
           body: JSON.stringify({
             size: 20,
