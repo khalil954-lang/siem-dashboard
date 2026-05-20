@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import Sidebar from "./components/Sidebar";
 import Home from "./pages/Home";
 import Monitoring from "./pages/Monitoring";
@@ -7,6 +7,15 @@ import Agents from "./pages/Agents";
 
 function App() {
   const [activePage, setActivePage] = useState("Home");
+  const enterpriseLogo = useMemo(() => {
+    const logoContext = require.context("./", false, /\.(png|jpe?g|svg|webp)$/i);
+    const logoFile = logoContext.keys().find((filePath) => {
+      const fileName = filePath.split("/").pop().toLowerCase();
+      return /^(enterprise[-_ ]?logo|logo)([-_.].+)?$/i.test(fileName);
+    });
+
+    return logoFile ? logoContext(logoFile) : null;
+  }, []);
 
   const renderPage = () => {
     switch (activePage) {
@@ -30,7 +39,19 @@ function App() {
         <header className="top-header">
           <h1 className="portal-title">SIEM Portal</h1>
           <div className="user-profile">
-            <div className="avatar">SD</div>
+            <div
+              className="avatar avatar--logo"
+              role="img"
+              aria-label={
+                enterpriseLogo ? "Enterprise logo" : "Enterprise logo placeholder"
+              }
+            >
+              {enterpriseLogo ? (
+                <img src={enterpriseLogo} alt="Enterprise logo" />
+              ) : (
+                <span className="avatar-fallback" aria-hidden="true" />
+              )}
+            </div>
           </div>
         </header>
         <section className="content-wrapper">{renderPage()}</section>
