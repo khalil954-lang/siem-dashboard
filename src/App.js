@@ -6,9 +6,12 @@ import Analytics from "./pages/Analytics";
 import Agents from "./pages/Agents";
 
 const logoContext = require.context("./", true, /\.(png|jpe?g|svg|webp)$/i);
-const logoFile = logoContext.keys().find((filePath) =>
-  /enterprise[-_ ]?logo|logo/i.test(filePath)
-);
+const logoFile = logoContext.keys().find((filePath) => {
+  const fileName = filePath.split("/").pop()?.toLowerCase() || "";
+  return /^(enterprise[-_ ]?logo|logo)([-_.].+)?\.(png|jpe?g|svg|webp)$/i.test(
+    fileName
+  );
+});
 const enterpriseLogo = logoFile ? logoContext(logoFile) : null;
 
 function App() {
@@ -36,10 +39,16 @@ function App() {
         <header className="top-header">
           <h1 className="portal-title">SIEM Portal</h1>
           <div className="user-profile">
-            <div className="avatar avatar--logo">
+            <div
+              className="avatar avatar--logo"
+              role="img"
+              aria-label={enterpriseLogo ? "Enterprise logo" : "User avatar"}
+            >
               {enterpriseLogo ? (
                 <img src={enterpriseLogo} alt="Enterprise logo" />
-              ) : null}
+              ) : (
+                <span className="avatar-fallback" aria-hidden="true" />
+              )}
             </div>
           </div>
         </header>
