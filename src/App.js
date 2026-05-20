@@ -1,21 +1,21 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import Sidebar from "./components/Sidebar";
 import Home from "./pages/Home";
 import Monitoring from "./pages/Monitoring";
 import Analytics from "./pages/Analytics";
 import Agents from "./pages/Agents";
 
-const logoContext = require.context("./", true, /\.(png|jpe?g|svg|webp)$/i);
-const logoFile = logoContext.keys().find((filePath) => {
-  const fileName = filePath.split("/").pop()?.toLowerCase() || "";
-  return /^(enterprise[-_ ]?logo|logo)([-_.].+)?\.(png|jpe?g|svg|webp)$/i.test(
-    fileName
-  );
-});
-const enterpriseLogo = logoFile ? logoContext(logoFile) : null;
-
 function App() {
   const [activePage, setActivePage] = useState("Home");
+  const enterpriseLogo = useMemo(() => {
+    const logoContext = require.context("./", false, /\.(png|jpe?g|svg|webp)$/i);
+    const logoFile = logoContext.keys().find((filePath) => {
+      const fileName = filePath.split("/").pop().toLowerCase();
+      return /^(enterprise[-_ ]?logo|logo)([-_.].+)?$/i.test(fileName);
+    });
+
+    return logoFile ? logoContext(logoFile) : null;
+  }, []);
 
   const renderPage = () => {
     switch (activePage) {
@@ -42,7 +42,9 @@ function App() {
             <div
               className="avatar avatar--logo"
               role="img"
-              aria-label={enterpriseLogo ? "Enterprise logo" : "User avatar"}
+              aria-label={
+                enterpriseLogo ? "Enterprise logo" : "Enterprise logo placeholder"
+              }
             >
               {enterpriseLogo ? (
                 <img src={enterpriseLogo} alt="Enterprise logo" />
