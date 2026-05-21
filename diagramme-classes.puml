@@ -1,0 +1,131 @@
+@startuml
+title SIEM Dashboard - Diagramme de classes (React)
+
+skinparam classAttributeIconSize 0
+hide empty members
+
+class App <<component>> {
+  -activePage: string
+  -enterpriseLogo: string | null
+  +renderPage(): JSX
+}
+
+class Sidebar <<component>> {
+  +props: { active: string, setActive: Function }
+  -menuItems: MenuItem[]
+}
+
+class Home <<component>> {
+  -stats: StatItem[]
+  -chartData: ChartData
+}
+
+class Monitoring <<component>> {
+  -search: string
+  -severityFilter: string
+  -alerts: Alert[]
+  +fetchAlerts(): Promise
+}
+
+class Analytics <<component>> {
+  -chartData: ChartData | null
+  +fetchChartData(): Promise
+  +totalAlerts(): number
+  +peakTime(): string
+}
+
+class Agents <<component>> {
+  -agents: Agent[]
+  +fetchAgents(): Promise
+}
+
+class LogsTable <<component>> {
+  -logs: LogEntry[]
+  +fetchLogs(): Promise
+}
+
+class AgentStatusHelper <<utility>> {
+  +isActiveAgent(status: string): boolean
+}
+
+class WazuhAPI <<external>> {
+  +/security/user/authenticate
+  +/agents
+  +/wazuh-alerts-4.x-*/_search
+  +/wazuh-alerts-*/_search
+}
+
+class ChartJS <<library>>
+
+class MenuItem {
+  +name: string
+  +icon: string
+}
+
+class StatItem {
+  +label: string
+  +value: number
+  +color: string
+}
+
+class Alert {
+  +id: number
+  +ip: string
+  +type: string
+  +severity: string
+  +time: string
+}
+
+class Agent {
+  +id: string
+  +name: string
+  +ip: string
+  +status: string
+}
+
+class LogEntry {
+  +timestamp: string
+  +agent_name: string
+  +agent_ip: string
+  +rule: string
+  +severity: string
+  +message: string
+}
+
+class ChartData {
+  +labels: string[]
+  +datasets: Dataset[]
+}
+
+class Dataset {
+  +label: string
+  +data: number[]
+  +borderColor: string
+  +backgroundColor: string
+}
+
+App --> Sidebar : renders
+App --> Home : renders
+App --> Monitoring : renders
+App --> Analytics : renders
+App --> Agents : renders
+
+Sidebar *-- MenuItem
+Home *-- StatItem
+Home ..> ChartData
+Home ..> ChartJS
+
+Monitoring *-- Alert
+Monitoring ..> WazuhAPI
+
+Analytics ..> ChartData
+Analytics ..> ChartJS
+Analytics ..> WazuhAPI
+
+Agents *-- Agent
+Agents ..> AgentStatusHelper
+Agents ..> WazuhAPI
+
+LogsTable *-- LogEntry
+LogsTable ..> WazuhAPI
+@enduml
