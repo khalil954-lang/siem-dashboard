@@ -92,8 +92,8 @@ function Analytics() {
             {
               label: "Alerts",
               data: dataPoints,
-              borderColor: "#3498db",
-              backgroundColor: "rgba(52, 152, 219, 0.2)",
+              borderColor: "#d11a2a",
+              backgroundColor: "rgba(209, 26, 42, 0.2)",
               fill: true,
               tension: 0.3
             }
@@ -133,11 +133,11 @@ function Analytics() {
             onChange={(e) => setTimeRange(e.target.value)}
             style={{ padding: "8px", borderRadius: "6px", cursor: "pointer" }}
           >
-            <option value="15m">Last 15 minutes</option>
-            <option value="1h">Last 1 hour</option>
-            <option value="12h">Last 12 hours</option>
-            <option value="24h">Last 24 hours</option>
-            <option value="7d">Last 7 days</option>
+            <option value="15m">Dernières 15 minutes</option>
+            <option value="1h">Dernière 1 heure</option>
+            <option value="12h">Dernières 12 heures</option>
+            <option value="24h">Dernières 24 heures</option>
+            <option value="7d">Derniers 7 jours</option>
           </select>
         </div>
       </div>
@@ -150,20 +150,20 @@ function Analytics() {
 
         <div className="metrics-sidebar">
           <div className="metric-card">
-            <h3>Total Alerts</h3>
+            <h3>Alertes Totales</h3>
             <div className="metric-value">
               <span className="number">{totalAlerts}</span>
             </div>
-            <p className="metric-desc">Total records in the current chart window</p>
+            <p className="metric-desc">Les alertes totales dans la fenêtre du graphique</p>
           </div>
           <div className="metric-card">
-            <h3>Peak Time</h3>
+            <h3>Heure de Pointe</h3>
             <div className="metric-value">
               <span className="number" style={{ fontSize: "1.5rem" }}>
                 {peakTime}
               </span>
             </div>
-            <p className="metric-desc">Highest alert count interval</p>
+            <p className="metric-desc">L'heure avec le plus grand nombre d'alertes</p>
           </div>
         </div>
       </div>

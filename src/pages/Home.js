@@ -92,7 +92,7 @@ function Home() {
         <div>
           <h2>SIEM Dashboard</h2>
           {/* Ton message spécifique en haut */}
-          <p className="subtitle" style={{ color: "#3498db", fontWeight: "600" }}>
+          <p className="subtitle" style={{ color: "#d22e3c", fontWeight: "600" }}>
             Résumé global des alertes générées dans les 24 dernières heures
           </p>
         </div>
@@ -102,7 +102,7 @@ function Home() {
       <div className="agents-grid">
         <div className="agent-card">
           <div className="detail-row">
-            <span className="label">Total Alerts</span>
+            <span className="label">Alertes Totales</span>
             <span className="value" style={{ color: "#4a90e2", fontSize: "1.75rem", fontWeight: "bold" }}>{stats.total}</span>
           </div>
         </div>

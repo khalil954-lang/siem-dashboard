@@ -1,18 +1,22 @@
 import React from "react";
+import logo from "../assets/Logo_keystone.png";
+import { FiHome, FiShield, FiBarChart2, FiMonitor } from "react-icons/fi";
+
 
 function Sidebar({ active, setActive }) {
   const menuItems = [
-    { name: "Home", icon: "🏠" },
-    { name: "Monitoring", icon: "📊" },
-    { name: "Analytics", icon: "📈" },
-    { name: "Agents", icon: "🖥️" }
+    { name: "Home", icon: <FiHome /> },
+    { name: "Monitoring", icon: <FiShield />},
+    { name: "Analytics", icon: <FiBarChart2 /> },
+    { name: "Agents", icon: <FiMonitor /> }
   ];
 
   return (
     <aside className="sidebar">
       <div className="sidebar-header">
         <div className="brand-logo" />
-        <h2>SIEM</h2>
+          <img className="brand-logo-img" src={logo} alt="Keystone Group" />
+          <h2 className="brand-title">Keystone</h2>
       </div>
 
       <nav className="sidebar-nav">

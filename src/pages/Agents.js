@@ -54,7 +54,7 @@ function Agents() {
       <div className="section-header">
         <div>
           <h2>Agents</h2>
-          <p className="subtitle">Connected endpoints and runtime status</p>
+          <p className="subtitle">Les agents connectés et leur statut en temps réel</p>
         </div>
       </div>
 

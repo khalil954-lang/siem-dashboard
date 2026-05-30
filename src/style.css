@@ -1,8 +1,8 @@
 :root {
-    --primary-blue: #2563eb;
-    --primary-hover: #1d4ed8;
+    --primary-blue: #d11a2a;
+    --primary-hover: #a1121e;
     --bg-workspace: #f5f7f9;
-    --bg-sidebar: #ffffff;
+    --bg-sidebar: #0f0f10;
     --bg-card: #ffffff;
     --text-main: #111827;
     --text-muted: #6b7280;
@@ -45,6 +45,25 @@ body {
     height: 100vh;
 }
 
+/* Keystone logo in sidebar */
+.brand-logo-img {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+  margin-right: 12px;
+}
+
+.brand-title {
+  font-size: 1.1rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+/* Accent rouge sur item actif (au lieu du fond bleu clair) */
+.nav-item.active {
+  background-color: rgba(209, 26, 42, 0.10);
+  color: var(--primary-blue);
+}
 /* Sidebar Styles */
 .sidebar {
     width: 260px;
@@ -117,6 +136,22 @@ body {
     color: var(--primary-blue);
 }
 
+.sidebar-header h2,
+.nav-label,
+.nav-item {
+  color: #e5e7eb; /* gris clair sur sidebar noire */
+}
+
+.nav-item:hover {
+  background-color: rgba(255,255,255,0.06);
+  color: #ffffff;
+}
+
+.nav-item.active {
+  background-color: rgba(209, 26, 42, 0.18);
+  color: #ffffff;
+}
+
 /* Main Content Styles */
 .main-content {
     flex: 1;
@@ -139,9 +174,15 @@ body {
 }
 
 .portal-title {
-    font-size: 1.125rem;
-    font-weight: 600;
-    color: var(--primary-blue);
+  font-size: 22px;        /* taille stable */
+  line-height: 1.1;
+  font-weight: 800;
+  color: var(--primary-blue);
+  white-space: nowrap;    /* évite qu’il casse sur 2 lignes */
+}
+
+.top-header {
+  min-height: 70px;       /* au cas où une page le “réduit” */
 }
 
 .search-container {
